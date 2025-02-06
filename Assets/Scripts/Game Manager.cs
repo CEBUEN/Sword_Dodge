@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
     public float spawnRate;
     public Transform player; // Reference to the player
-    public float swipeThreshold = 50f; // Minimum swipe distance
-    public float fastMoveDistance = 2f; // Distance to move fast on swipe
+    public float swipeThreshold = 20f; // Minimum swipe distance
+    public float fastMoveDistance = 8f; // Distance to move fast on swipe
     public AudioSource backgroundMusic; // Reference to background music
 
     private bool gameStarted = false;
