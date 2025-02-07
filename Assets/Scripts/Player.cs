@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     public float moveSpeed;
-    Rigidbody2D rb;
+    public AudioClip collisionSound; // Collision sound clip
+    private Rigidbody2D rb;
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -21,15 +24,15 @@ public class Player : MonoBehaviour
         {
             Vector3 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            if(touchPos.x < 0)
+            if (touchPos.x < 0)
             {
                 // click to left, move to the left
-                rb.AddForce( Vector2.left * moveSpeed );
+                rb.AddForce(Vector2.left * moveSpeed);
             }
             else
             {
                 // click to right, move to the right
-                rb.AddForce( Vector2.right * moveSpeed );
+                rb.AddForce(Vector2.right * moveSpeed);
             }
         }
         else
@@ -37,10 +40,15 @@ public class Player : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "block")
+        if (collision.gameObject.tag == "block")
         {
+            if (collisionSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(collisionSound);
+            }
             SceneManager.LoadScene(0);
         }
     }

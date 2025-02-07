@@ -11,12 +11,24 @@ public class GameManager : MonoBehaviour
     public Transform player; // Reference to the player
     public float swipeThreshold = 20f; // Minimum swipe distance
     public float fastMoveDistance = 8f; // Distance to move fast on swipe
-    public AudioSource backgroundMusic; // Reference to background music
+    public AudioClip spawnSound; // Sound when spawning block
 
     private bool gameStarted = false;
     private bool gamePaused = false;
     private Vector2 startTouchPosition;
     private Vector2 endTouchPosition;
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+
+        // Ensure an AudioSource exists
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
 
     void Update()
     {
@@ -24,10 +36,6 @@ public class GameManager : MonoBehaviour
         {
             StartSpawning();
             gameStarted = true;
-            if (backgroundMusic != null)
-            {
-                backgroundMusic.Play();
-            }
         }
 
         // Detect two-finger touch to toggle pause
@@ -51,6 +59,12 @@ public class GameManager : MonoBehaviour
             Vector3 spawnPos = spawnPoint.position;
             spawnPos.x = Random.Range(-maxX, maxX);
             Instantiate(block, spawnPos, Quaternion.identity);
+
+            // Play spawn sound
+            if (spawnSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(spawnSound);
+            }
         }
     }
 
@@ -58,14 +72,6 @@ public class GameManager : MonoBehaviour
     {
         gamePaused = !gamePaused;
         Time.timeScale = gamePaused ? 0f : 1f; // Pause or resume the game
-
-        if (backgroundMusic != null)
-        {
-            if (gamePaused)
-                backgroundMusic.Pause();
-            else
-                backgroundMusic.UnPause();
-        }
     }
 
     private void DetectSwipe()
